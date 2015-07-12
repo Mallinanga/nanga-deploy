@@ -14,9 +14,10 @@ class Nanga_Deploy_Updates {
         $this->remote_info_url    = 'https://api.github.com/repos/Mallinanga/nanga-deploy';
         $this->remote_version_url = 'https://api.github.com/repos/Mallinanga/nanga-deploy/releases';
         $this->slug               = 'nanga-deploy';
-        $this->version            = '1.1.0';
+        $this->version            = '1.1.1';
         add_filter( 'plugins_api', array( $this, 'inject_info' ), 10, 3 );
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'inject_update' ) );
+        add_filter( 'upgrader_post_install', array( $this, 'post_install' ), 10, 3 );
     }
 
     private function remote_info() {
@@ -75,21 +76,16 @@ class Nanga_Deploy_Updates {
 
     public function inject_info( $result, $action, $args ) {
         if ( isset( $args->slug ) && $args->slug == $this->slug ) {
-            $remote_info    = $this->remote_info();
             $remote_version = $this->remote_version();
             $info           = array(
                 'name'         => $this->name,
-                'slug'         => $remote_info->name,
+                'slug'         => $this->slug,
                 'version'      => $remote_version->tag_name,
-                'homepage'     => $remote_info->html_url,
                 'author'       => $this->author,
-                'author_url'   => $remote_info->owner->html_url,
-                'contributors' => $remote_info->owner->login,
-                'last_updated' => $remote_info->pushed_at,
+                'last_updated' => $remote_version->published_at,
                 'tested'       => get_bloginfo( 'version' ),
                 'sections'     => array(
-                    'description' => $remote_info->description,
-                    'changelog'   => $remote_version->body,
+                    'changelog' => $remote_version->body,
                 ),
             );
             $obj            = new stdClass();
@@ -99,6 +95,15 @@ class Nanga_Deploy_Updates {
 
             return $obj;
         }
+
+        return $result;
+    }
+
+    public function post_install( $true, $hook_extra, $result ) {
+        global $wp_filesystem;
+        $proper_destination = WP_PLUGIN_DIR . '/' . $this->slug;
+        $wp_filesystem->move( $result['destination'], $proper_destination );
+        $result['destination'] = $proper_destination;
 
         return $result;
     }
