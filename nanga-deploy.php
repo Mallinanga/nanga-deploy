@@ -3,7 +3,7 @@
  * Plugin Name:       VG web things Deployer
  * Plugin URI:        https://github.com/Mallinanga/nanga-deploy
  * Description:       A command-line task to deploy to different environments.
- * Version:           1.1.1
+ * Version:           1.1.2
  * Author:            Panos Paganis
  * Author URI:        https://github.com/Mallinanga
  */

@@ -137,10 +137,11 @@ class Nanga_Deploy_Command extends WP_CLI_Command {
         }
         foreach ( $commands as $command_info ) {
             list( $command, $exit_on_error ) = $command_info;
-            WP_CLI::line( $command );
+            if ( isset( $this->flags['dry-run'] ) ) {
+                WP_CLI::line( $command );
+            }
             if ( ! isset( $this->flags['dry-run'] ) ) {
-                //WP_CLI::confirm( 'Run the above command?' );
-                WP_CLI::launch( $command, $exit_on_error, true );
+                WP_CLI::launch( $command, $exit_on_error );
             }
         }
     }

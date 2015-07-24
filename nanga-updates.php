@@ -14,7 +14,7 @@ class Nanga_Deploy_Updates {
         $this->remote_info_url    = 'https://api.github.com/repos/Mallinanga/nanga-deploy';
         $this->remote_version_url = 'https://api.github.com/repos/Mallinanga/nanga-deploy/releases';
         $this->slug               = 'nanga-deploy';
-        $this->version            = '1.1.1';
+        $this->version            = '1.1.2';
         add_filter( 'plugins_api', array( $this, 'inject_info' ), 10, 3 );
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'inject_update' ) );
         add_filter( 'upgrader_post_install', array( $this, 'post_install' ), 10, 3 );

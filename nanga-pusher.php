@@ -37,17 +37,38 @@ class Nanga_Deploy_Pusher {
         $excludes    = array_merge(
             $excludes,
             array(
-                '_*.*',
                 '*.log',
                 '*.sql',
-                '.git',
-                '.idea',
-                //'.sass-cache',
-                //'assets/vendor',
-                //'bower_componets',
-                'local-config.php',
-                //'node_modules',
-                //'wp-content/cache',
+                '.bowerrc',
+                '.DS_Store',
+                '.editorconfig',
+                '.ftpquota',
+                '.git/',
+                '.gitignore',
+                '.gitmodules',
+                '.idea/',
+                '.jshintrc',
+                '.local-config.php',
+                '.sass-cache/',
+                '_*.css',
+                '_*.js',
+                '_*.sh',
+                'assets/less/',
+                'assets/sass/',
+                'assets/scss/',
+                'assets/vendor/',
+                'bower.json',
+                'bower_components/',
+                'composer.json',
+                'composer.lock',
+                'error_log',
+                'Gruntfile.js',
+                'gulpfile.js',
+                'i.php',
+                'node_modules/',
+                'package.json',
+                'sitemap.xml',
+                'sitemap.xml.gz',
                 'wp-config.php',
             )
         );
@@ -69,9 +90,9 @@ class Nanga_Deploy_Pusher {
             return $acc;
         } );
         if ( $ssh_host ) {
-            $command = "rsync -avz -e 'ssh -p $ssh_port' --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r $local_path $ssh_user@$ssh_host:$remote_path $excludes";
+            $command = "rsync -avz -e 'ssh -p $ssh_port' --no-o --no-g --chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r $local_path $ssh_user@$ssh_host:$remote_path $excludes";
         } else {
-            $command = "rsync -avz --progress $local_path $remote_path $excludes";
+            $command = "rsync -avz $local_path $remote_path $excludes";
         }
         $commands[] = array( $command, true );
     }
