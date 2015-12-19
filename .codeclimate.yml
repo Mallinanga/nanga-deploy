@@ -16,6 +16,8 @@ engines:
         enabled: false
       PSR2 Methods MethodDeclaration Underscore:
         enabled: false
+      PSR2 Classes PropertyDeclaration Underscore:
+        enabled: false
       Squiz Classes ValidClassName NotCamelCaps:
         enabled: false
   phpmd:
@@ -31,7 +33,11 @@ engines:
         enabled: false
       Controversial/CamelCasePropertyName:
         enabled: false
+      Controversial/CamelCaseVariableName:
+        enabled: false
       Controversial/Superglobals:
+        enabled: false
+      UnusedFormalParameter:
         enabled: false
       UnusedLocalVariable:
         enabled: false
