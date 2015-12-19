@@ -58,10 +58,13 @@ class Nanga_Deploy_Command extends WP_CLI_Command
      * @param array $args
      * @param array $flags
      */
+    /*
+    @todo WIP
     public function pull($args = array(), $flags = array())
     {
         $this->_pull_command('commands', $args, $flags);
     }
+    */
 
     /**
      * Pull local from remote, only filesystem
@@ -71,10 +74,13 @@ class Nanga_Deploy_Command extends WP_CLI_Command
      * @param array $args
      * @param array $flags
      */
+    /*
+    @todo WIP
     public function pull_files($args = array(), $flags = array())
     {
         $this->_pull_command('commands_for_files', $args, $flags);
     }
+    */
 
     /**
      * Pull local from remote, only media [INCOMPLETE]
@@ -84,10 +90,13 @@ class Nanga_Deploy_Command extends WP_CLI_Command
      * @param array $args
      * @param array $flags
      */
+    /*
+    @todo WIP
     public function pull_media($args = array(), $flags = array())
     {
         //$this->_pull_command( 'commands_for_files', $args, $flags );
     }
+    */
 
     /**
      * Put local environment to sleep.
