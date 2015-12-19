@@ -160,7 +160,7 @@ class Nanga_Deploy_Command extends WP_CLI_Command
             if (isset($this->flags['dry-run'])) {
                 WP_CLI::line($command);
             }
-            if ( ! isset($this->flags['dry-run'])) {
+            if (! isset($this->flags['dry-run'])) {
                 WP_CLI::launch($command, $exit_on_error);
             }
         }
@@ -194,7 +194,7 @@ class Nanga_Deploy_Command extends WP_CLI_Command
         $errors = array();
         foreach (array('path', 'url', 'db_host', 'db_user', 'db_name', 'db_password') as $postfix) {
             $required_constant = self::config_constant($postfix);
-            if ( ! defined($required_constant)) {
+            if (! defined($required_constant)) {
                 $errors[] = "$required_constant is not defined";
             }
         }
@@ -240,7 +240,7 @@ class Nanga_Deploy_Command extends WP_CLI_Command
     private static function _trim_url($url)
     {
         $url = trim($url, '/');
-        if ( ! preg_match('#^http(s)?://#', $url)) {
+        if (! preg_match('#^http(s)?://#', $url)) {
             $url = 'http://' . $url;
         }
         $url_parts = parse_url($url);

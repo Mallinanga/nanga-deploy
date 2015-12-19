@@ -7,7 +7,7 @@
  * Author:            Panos Paganis
  * Author URI:        https://github.com/Mallinanga
  */
-if ( ! defined('WPINC')) {
+if (! defined('WPINC')) {
     die;
 }
 //@todo We're not sure if this Class is available.
