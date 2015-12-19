@@ -1,34 +1,31 @@
 ---
 engines:
-  csslint:
-    enabled: true
   duplication:
     enabled: true
     config:
       languages:
-      - ruby
-      - javascript
-      - python
       - php
-  eslint:
-    enabled: true
   fixme:
     enabled: true
   phpcodesniffer:
     enabled: true
   phpmd:
     enabled: true
-ratings:
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      Controversial/CamelCaseClassName:
+        enabled: false
+      Controversial/CamelCaseMethodName:
+        enabled: false
+      Controversial/Superglobals:
+        enabled: false
+      PSR1 Classes ClassDeclaration MissingNamespace:
+        enabled: false
+      PSR2 Methods MethodDeclaration Underscore:
+        enabled: false
+  ratings:
   paths:
-  - "**.css"
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
   - "**.php"
-  - "**.py"
-  - "**.rb"
 exclude_paths:
-- includes/cpt/**/*
-- public/js/jquery.min.js
 - vendor/**/*
