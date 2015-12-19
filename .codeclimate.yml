@@ -9,6 +9,15 @@ engines:
     enabled: true
   phpcodesniffer:
     enabled: true
+    checks:
+      PSR1 Classes ClassDeclaration MissingNamespace:
+        enabled: false
+      PSR1 Methods CamelCapsMethodName NotCamelCaps:
+        enabled: false
+      PSR2 Methods MethodDeclaration Underscore:
+        enabled: false
+      Squiz Classes ValidClassName NotCamelCaps:
+        enabled: false
   phpmd:
     enabled: true
     checks:
@@ -18,11 +27,13 @@ engines:
         enabled: false
       Controversial/CamelCaseMethodName:
         enabled: false
+      Controversial/CamelCaseParameterName:
+        enabled: false
+      Controversial/CamelCasePropertyName:
+        enabled: false
       Controversial/Superglobals:
         enabled: false
-      PSR1 Classes ClassDeclaration MissingNamespace:
-        enabled: false
-      PSR2 Methods MethodDeclaration Underscore:
+      UnusedLocalVariable:
         enabled: false
 ratings:
   paths:
