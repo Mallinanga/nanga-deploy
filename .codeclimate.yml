@@ -24,7 +24,7 @@ engines:
         enabled: false
       PSR2 Methods MethodDeclaration Underscore:
         enabled: false
-  ratings:
+ratings:
   paths:
   - "**.php"
 exclude_paths:
