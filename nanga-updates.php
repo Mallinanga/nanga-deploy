@@ -23,46 +23,6 @@ class Nanga_Deploy_Updates
         add_filter('upgrader_post_install', array($this, 'post_install'), 10, 3);
     }
 
-    private function remote_info()
-    {
-        $request = wp_remote_get($this->remote_info_url);
-        if (! is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
-            $info = wp_remote_retrieve_body($request);
-            $info = @json_decode($info);
-        } else {
-            $info = false;
-        }
-
-        return $info;
-    }
-
-    private function remote_version()
-    {
-        if (! empty($_GET['force-check'])) {
-            if (empty($_GET[$this->slug . '-ignore-force-check'])) {
-                delete_transient($this->slug . '_cached_version');
-            }
-            $_GET[$this->slug . '-ignore-force-check'] = true;
-        }
-        $cached_version = get_transient($this->slug . '_cached_version');
-        if ($cached_version) {
-            return $cached_version;
-        }
-        $request = wp_remote_get($this->remote_version_url);
-        if (! is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
-            $version = wp_remote_retrieve_body($request);
-            $version = @json_decode($version);
-            $version = $version[0];
-            $timeout = 30 * MINUTE_IN_SECONDS;
-        } else {
-            $version = 0;
-            $timeout = 5 * MINUTE_IN_SECONDS;
-        }
-        set_transient($this->slug . '_cached_version', $version, $timeout);
-
-        return $version;
-    }
-
     public function inject_update($transient)
     {
         $remote_version = $this->remote_version();
@@ -78,6 +38,32 @@ class Nanga_Deploy_Updates
         $transient->response[$this->slug . '/' . $this->slug . '.php'] = $obj;
 
         return $transient;
+    }
+
+    private function remote_version()
+    {
+        if ( ! empty($_GET['force-check'])) {
+            if (empty($_GET[$this->slug . '-ignore-force-check'])) {
+                delete_transient($this->slug . '_cached_version');
+            }
+            $_GET[$this->slug . '-ignore-force-check'] = true;
+        }
+        $cached_version = get_transient($this->slug . '_cached_version');
+        if ($cached_version) {
+            return $cached_version;
+        }
+        $request = wp_remote_get($this->remote_version_url);
+        if ( ! is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
+            $version = wp_remote_retrieve_body($request);
+            $version = @json_decode($version);
+            $version = $version[0];
+            set_transient($this->slug . '_cached_version', $version, 30 * MINUTE_IN_SECONDS);
+
+            return $version;
+        }
+        set_transient($this->slug . '_cached_version', 0, 5 * MINUTE_IN_SECONDS);
+
+        return 0;
     }
 
     public function inject_info($result, $action, $args)
@@ -114,5 +100,18 @@ class Nanga_Deploy_Updates
         $result['destination'] = $proper_destination;
 
         return $result;
+    }
+
+    private function remote_info()
+    {
+        $request = wp_remote_get($this->remote_info_url);
+        if ( ! is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
+            $info = wp_remote_retrieve_body($request);
+            $info = @json_decode($info);
+
+            return $info;
+        }
+
+        return false;
     }
 }

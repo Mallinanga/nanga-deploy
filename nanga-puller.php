@@ -10,7 +10,7 @@ class Nanga_Deploy_Puller
 
     public function commands()
     {
-        $commands = array();
+        $commands = [];
         if ($this->params['ssh_db_host']) {
             $this->_commands_for_database_import_thru_ssh($commands);
         } else {
@@ -23,70 +23,14 @@ class Nanga_Deploy_Puller
         return $commands;
     }
 
-    public function commands_for_files()
-    {
-        $commands = array();
-        $this->_commands_for_files($commands);
-
-        return $commands;
-    }
-
-    protected function _commands_for_files(&$commands)
-    {
-        extract($this->params);
-        $dir = wp_upload_dir();
-        //$dist_path   = constant( Nanga_Deploy_Command::config_constant( 'path' ) ) . '/';
-        $dist_path   = constant(Nanga_Deploy_Command::config_constant('path'));
-        $remote_path = $dist_path;
-        $local_path  = ABSPATH;
-        $excludes    = array_merge($excludes, array(
-            '_*.*',
-            '*.log',
-            '*.sql',
-            '.git',
-            '.idea',
-            //'.sass-cache',
-            //'assets/vendor',
-            //'bower_componets',
-            'local-config.php',
-            //'node_modules',
-            //'wp-content/cache',
-            //'wp-config.php',
-        ));
-        // In case the source env is in a subfolder of the destination env, we exclude the relative path to the source to avoid infinite loop.
-        /*
-        if ( ! $ssh_host ) {
-            $remote_local_path = realpath( $local_path );
-            if ( $remote_local_path ) {
-                $remote_path       = realpath( $remote_path ) . '/';
-                $remote_local_path = str_replace( $remote_path . '/', '', $remote_local_path );
-                $excludes[]        = $remote_local_path;
-            }
-        }
-        */
-        $excludes = array_reduce($excludes, function ($acc, $value) {
-            $acc .= "--exclude \"$value\" ";
-
-            return $acc;
-        });
-        if ($ssh_host) {
-            $commands[] = array(
-                "rsync -avz -e 'ssh -p $ssh_port' $ssh_user@$ssh_host:$remote_path $local_path $excludes",
-                true,
-            );
-        } else {
-            $commands[] = array("rsync -avz $remote_path $local_path $excludes", true);
-        }
-    }
-
     protected function _commands_for_database_import_thru_ssh(&$commands)
     {
         extract($this->params);
         $host       = $db_host . ':' . $db_port;
         $dist_path  = constant(Nanga_Deploy_Command::config_constant('path')) . '/';
-        $commands[] = array("ssh $ssh_user@$ssh_host -p $ssh_port \"cd $dist_path;wp db export dump.sql;\"", true);
-        $commands[] = array("scp $ssh_user@$ssh_host:$dist_path/dump.sql .", true);
-        $commands[] = array("ssh $ssh_user@$ssh_host -p $ssh_port \"cd $dist_path; rm db.sql;\"", true);
+        $commands[] = ["ssh $ssh_user@$ssh_host -p $ssh_port \"cd $dist_path;wp db export dump.sql;\"", true];
+        $commands[] = ["scp $ssh_user@$ssh_host:$dist_path/dump.sql .", true];
+        $commands[] = ["ssh $ssh_user@$ssh_host -p $ssh_port \"cd $dist_path; rm db.sql;\"", true];
     }
 
     protected function _commands_for_database_import_locally(&$commands)
@@ -106,12 +50,68 @@ class Nanga_Deploy_Puller
     protected function _commands_for_database_dump(&$commands)
     {
         extract($this->params);
-        $commands[]     = array('wp db export db_bk.sql', true);
-        $commands[]     = array('wp db import dump.sql', true);
+        $commands[]     = ['wp db export db_bk.sql', true];
+        $commands[]     = ['wp db import dump.sql', true];
         $siteurl        = get_option('siteurl');
-        $searchreplaces = array($url => $siteurl, untrailingslashit($path) => untrailingslashit(ABSPATH));
+        $searchreplaces = [$url => $siteurl, untrailingslashit($path) => untrailingslashit(ABSPATH)];
         foreach ($searchreplaces as $search => $replace) {
-            $commands[] = array("wp search-replace $search $replace", true);
+            $commands[] = ["wp search-replace $search $replace", true];
         }
+    }
+
+    protected function _commands_for_files(&$commands)
+    {
+        extract($this->params);
+        $dir = wp_upload_dir();
+        //$dist_path   = constant( Nanga_Deploy_Command::config_constant( 'path' ) ) . '/';
+        $dist_path   = constant(Nanga_Deploy_Command::config_constant('path'));
+        $remote_path = $dist_path;
+        $local_path  = ABSPATH;
+        $excludes    = array_merge($excludes, [
+            '_*.*',
+            '*.log',
+            '*.sql',
+            '.git',
+            '.idea',
+            //'.sass-cache',
+            //'assets/vendor',
+            //'bower_componets',
+            'local-config.php',
+            //'node_modules',
+            //'wp-content/cache',
+            //'wp-config.php',
+        ]);
+        // In case the source env is in a subfolder of the destination env, we exclude the relative path to the source to avoid infinite loop.
+        /*
+        if ( ! $ssh_host ) {
+            $remote_local_path = realpath( $local_path );
+            if ( $remote_local_path ) {
+                $remote_path       = realpath( $remote_path ) . '/';
+                $remote_local_path = str_replace( $remote_path . '/', '', $remote_local_path );
+                $excludes[]        = $remote_local_path;
+            }
+        }
+        */
+        $excludes = array_reduce($excludes, function ($acc, $value) {
+            $acc .= "--exclude \"$value\" ";
+
+            return $acc;
+        });
+        if ($ssh_host) {
+            $commands[] = [
+                "rsync -avz -e 'ssh -p $ssh_port' $ssh_user@$ssh_host:$remote_path $local_path $excludes",
+                true,
+            ];
+        } else {
+            $commands[] = ["rsync -avz $remote_path $local_path $excludes", true];
+        }
+    }
+
+    public function commands_for_files()
+    {
+        $commands = [];
+        $this->_commands_for_files($commands);
+
+        return $commands;
     }
 }

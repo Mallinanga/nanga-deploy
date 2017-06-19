@@ -3,11 +3,11 @@
  * Plugin Name:       VG web things Deployer
  * Plugin URI:        https://github.com/Mallinanga/nanga-deploy
  * Description:       A command-line task to deploy to different environments.
- * Version:           1.1.2
+ * Version:           1.2.0
  * Author:            Panos Paganis
  * Author URI:        https://github.com/Mallinanga
  */
-if (! defined('WPINC')) {
+if ( ! defined('WPINC')) {
     die;
 }
 //@todo We're not sure if this Class is available.
@@ -25,6 +25,7 @@ if (! defined('WPINC')) {
 //});
 if (defined('WP_CLI') && WP_CLI) {
     include 'nanga-command.php';
+    WP_CLI::add_command('deploy', 'Nanga_Deploy_Command');
 }
-require_once plugin_dir_path(__FILE__) . 'nanga-updates.php';
-new Nanga_Deploy_Updates();
+//require_once plugin_dir_path(__FILE__) . 'nanga-updates.php';
+//new Nanga_Deploy_Updates();
